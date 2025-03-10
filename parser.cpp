@@ -18,7 +18,7 @@ void JSONParser::parse()
                 case TOKEN::CURLY_OPEN:
                 {
                     std::shared_ptr<JSON_Node> parsedObject = parseObject();
-                    //parsedObject -> printNode(0);
+                    parsedObject -> printNode(0);
                     if(!root)
                     {
                         root = parsedObject;
@@ -181,3 +181,20 @@ std::shared_ptr<JSON_Node> JSONParser::parseNumber() {
     node->setFloat(fValue);
     return node;
 }
+
+std::shared_ptr<JSON_Node> JSONParser::parseBoolean() {
+    std::cout << "Parsed boolean\n";
+    std::shared_ptr<JSON_Node> node = std::make_shared<JSON_Node>();
+    Token nextToken = tokenizer.getToken();
+    node->setBool(nextToken.value == "True" ? true : false);
+    return node;
+}
+
+std::shared_ptr<JSON_Node> JSONParser::parseNull() {
+    std::cout << "Parsed null\n";
+    std::shared_ptr<JSON_Node> node = std::make_shared<JSON_Node>();
+    Token nextToken = tokenizer.getToken();
+    node->setNull();
+    return node;
+}
+

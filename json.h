@@ -66,5 +66,56 @@ public:
         this->value.bValue = bnum;
         type=Type::BOOLEAN;
     }
+    void setNull() {
+        type=Type::NULL_TYPE;
+    }
+    std::string toString(int indentLevel) {
+        std::string outputString = " ";
+        std::string spaceStr = std::to_string(indentLevel*' ');
+        switch(type) {
+            case Type::STRING:
+                outputString+=(spaceStr+*value.s);
+                break;
+            case Type::NUMBER:
+                outputString+=(spaceStr+std::to_string(value.fValue));
+                break;
+            case Type::BOOLEAN:
+                outputString+=(spaceStr+(value.bValue?"true":"false"));
+                break;
+            case Type::NULL_TYPE:
+                outputString+=(spaceStr+"null");
+                break;
+            case Type::LIST:
+                std::cout << "[";
+                int index = 0;
+                for (auto node: (*value.list)) {
+                    outputString+=node->toString(indentLevel + 1);
+                    if(index < (*value.list).size() - 1) {
+                        outputString +=spaceStr + ", ";
+                    }
+                    index++;
+                }
+                outputString+=(spaceStr + "]\n");
+                break;
+            case Type::OBJECT:
+                outputString+="{\n";
+                for(JSONObject::iterator i = (*value.object).begin(); i!=(*value.object).end(); i++) {
+                    outputString += (spaceStr + i -> first + ": ");
+                    outputString += (i -> second->toString(indentLevel + 1));
+                    JSONObject::iterator next = i;
+                    next++;
+                    if(next!=(*value.object).end()) {
+                        outputString += (spaceStr + ", ");
+                    }
+                    outputString += (spaceStr + "\n");
+                }
+                outputString += "}\n";
+                break;
+        }
+        return outputString;
+    }
+    void printNode(int indentLevel) {
+        std::cout << toString(indentLevel);
+    }
 };
 
